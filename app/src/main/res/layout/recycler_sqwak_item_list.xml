@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/autor_imageView"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/cezanne" />
+
+    <TextView
+        android:id="@+id/autor_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:text="AUTOR"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/autor_imageView"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/primary_text"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/message_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:text="MENSAJE"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        app:layout_constraintStart_toEndOf="@+id/autor_imageView"
+        app:layout_constraintTop_toBottomOf="@+id/autor_textView"
+        android:textColor="@color/primary_text" />
+
+    <TextView
+        android:id="@+id/date_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:text="DATE"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/autor_textView"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/secondary_text" />
+</android.support.constraint.ConstraintLayout>
