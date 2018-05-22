@@ -18,13 +18,20 @@ public class SqwakAdapter extends FlexibleAdapter<SqwakItem> {
     private Context context;
 
 
-    public SqwakAdapter(@Nullable List<SqwakItem> items) {
+    public SqwakAdapter(Context context) {
+        super(null);
+        this.context = context;
+    }
+
+
+    public SqwakAdapter(Context context, @Nullable List<SqwakItem> items) {
         super(items);
+        this.context = context;
     }
 
     public SqwakAdapter(Context context, Cursor cursor) {
 
-        this(cursor2List(context, cursor));
+        this(context, cursor2List(context, cursor));
 
         this.mCursor = cursor;
         this.context = context;

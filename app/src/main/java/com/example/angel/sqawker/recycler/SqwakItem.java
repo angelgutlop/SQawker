@@ -1,5 +1,6 @@
 package com.example.angel.sqawker.recycler;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
@@ -7,6 +8,7 @@ import android.widget.TextView;
 
 import com.example.angel.sqawker.R;
 import com.example.angel.sqawker.utils.DateUtils;
+import com.example.angel.sqawker.utils.InstructorsInfo;
 
 import org.joda.time.DateTime;
 
@@ -26,17 +28,19 @@ public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
 
 
     private int id;
-    private Bitmap bmp;
-    private DateTime date;
-    private String authorName;
-    private String message;
+    public Bitmap bmp;
+    public DateTime date;
+    public String authorName;
+    public String authorKey;
 
-    public SqwakItem(Bitmap bmp, DateTime date, String authorName, String message) {
+    public String message;
+
+    public SqwakItem(Context context, DateTime date, String authorKey, String message) {
         this.id = idStatic++;
-
-        this.bmp = bmp;
+        this.bmp = InstructorsInfo.getInstructorImage(authorKey);
         this.date = date;
-        this.authorName = authorName;
+        this.authorName = InstructorsInfo.getInstructorName(authorKey);
+        this.authorKey = authorKey;
         this.message = message;
     }
 

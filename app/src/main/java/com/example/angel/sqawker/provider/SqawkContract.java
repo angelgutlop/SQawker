@@ -23,6 +23,7 @@ public class SqawkContract {
 
     @DataType(TEXT)
     @NotNull
+    //@References(table = SqawkDatabase.INSTRUCTORS, column = InstructorsContract.COLUMN_AUTHOR_KEY)
     public static final String COLUMN_AUTOR_KEY = "key_author";
 
     @DataType(TEXT)
