@@ -3,12 +3,14 @@ package com.example.angel.sqawker;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
@@ -23,6 +25,8 @@ import com.example.angel.sqawker.recycler.SqwakItem;
 import com.example.angel.sqawker.utils.Instructor;
 import com.example.angel.sqawker.utils.InstructorsInfo;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -31,11 +35,20 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks, SharedPreferences.OnSharedPreferenceChangeListener {
 
     @BindView(R.id.sqwaker_recycler_view)
     RecyclerView sqwakerRecyclerView;
     SqwakAdapter sqwakAdapter;
+    SharedPreferences pref;
+    private boolean loadData = true;
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        loadData = true;
+        //secuentialLoaders();
+    }
+
 
     private enum LOADERS {
         LOADER_INSTRUCTORS_ID(1),
@@ -71,11 +84,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         ButterKnife.bind(this);
+        JodaTimeAndroid.init(this);
 
-        //fillDataBases(); //Da error ya que no está cargada la base de instructores.
-
-        secuentialLoaders();
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+        pref.registerOnSharedPreferenceChangeListener(this);
 
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -90,6 +104,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         sqwakerRecyclerView.setLayoutManager(layoutManager);
 
+        //fillDataBases(); //Da error ya que no está cargada la base de instructores.
+        secuentialLoaders();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        pref.unregisterOnSharedPreferenceChangeListener(this);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        // if (loadData) secuentialLoaders();
+        loadData = false;
+        super.onResume();
     }
 
     @Override
@@ -112,23 +142,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return super.onCreateOptionsMenu(menu);
     }
 
-    int nextLoader = 1;
+
     private Boolean multipleLoaders = false;
 
     private void secuentialLoaders() {
         multipleLoaders = true;
-        nextLoader();
+        getSupportLoaderManager().initLoader(1, null, this);
     }
 
-    private void nextLoader() {
-        if (!multipleLoaders) return;
-        if (nextLoader > LOADERS.values().length) {
-            nextLoader = 1;
-            multipleLoaders = false;
-            return;
-        }
-        getSupportLoaderManager().initLoader(nextLoader++, null, this);
+    private void secuentialLoadersLast() {
+        multipleLoaders = false;
     }
+
 
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
@@ -161,17 +186,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Cursor cursor;
         if (data == null) return;
 
-        switch (LOADERS.valueOf(loader.getId())) {
+        int id = loader.getId();
+        switch (LOADERS.valueOf(id)) {
 
-            case LOADER_MESSAGES_ID:
-                cursor = (Cursor) data;
-                sqwakAdapter.updateDataSet(cursor);
-                nextLoader();
-                break;
             case LOADER_INSTRUCTORS_ID:
                 cursor = (Cursor) data;
+
                 InstructorsInfo.setInfo(this, cursor);
-                nextLoader();
+                getSupportLoaderManager().initLoader(++id, null, this);
+                break;
+            case LOADER_MESSAGES_ID:
+                cursor = (Cursor) data;
+
+                sqwakAdapter.updateDataSet(cursor);
+                secuentialLoadersLast();
+                break;
 
             default:
                 return;
@@ -229,7 +258,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         contentResolver.delete(SqawkProvider.SqawkMessages.CONTENT_URI, null, null);
         contentResolver.bulkInsert(SqawkProvider.SqawkMessages.CONTENT_URI, values);
 
-        ;
 
     }
 

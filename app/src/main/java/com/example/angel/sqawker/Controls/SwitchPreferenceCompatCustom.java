@@ -35,6 +35,8 @@ public class SwitchPreferenceCompatCustom extends SwitchPreferenceCompat {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 cheked = isChecked;
+                SwitchPreferenceCompatCustom.super.getOnPreferenceChangeListener().onPreferenceChange(SwitchPreferenceCompatCustom.this, isChecked);
+
                 SwitchPreferenceCompatCustom.super.setChecked(isChecked);
             }
         });

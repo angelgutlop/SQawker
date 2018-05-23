@@ -41,6 +41,7 @@ public class SqwakAdapter extends FlexibleAdapter<SqwakItem> {
         this.mCursor = cursor;
         List<SqwakItem> list = cursor2List(context, cursor);
         updateDataSet(list);
+        this.notifyDataSetChanged();
     }
 
     public void addElements(Cursor cursor) {

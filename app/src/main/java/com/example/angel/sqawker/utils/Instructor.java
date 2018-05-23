@@ -36,7 +36,7 @@ public class Instructor {
             return BitmapFactory.decodeResource(context.getResources(), drawableId);
 
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+          
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
