@@ -6,13 +6,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.chauthai.swipereveallayout.SwipeRevealLayout;
+import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.angel.sqawker.R;
+import com.example.angel.sqawker.utils.DataBaseControl;
 import com.example.angel.sqawker.utils.DateUtils;
 import com.example.angel.sqawker.utils.InstructorsInfo;
 
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,19 +28,21 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
 
+    private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
     private static int idStatic = -1;
 
-
+    private static final int SECONDS_CLOSE = 2;
     private int id;
     public Bitmap bmp;
     public DateTime date;
     public String authorName;
     public String authorKey;
-
+    Context context;
     public String message;
 
     public SqwakItem(Context context, DateTime date, String authorKey, String message) {
+        this.context = context;
         this.id = idStatic++;
         this.bmp = InstructorsInfo.getInstructorImage(authorKey);
         this.date = date;
@@ -88,10 +95,13 @@ public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
 
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, SqwakViewHolver sqwakViewHolver, int position, List<Object> payloads) {
-        sqwakViewHolver.setFields(bmp, date, authorName, message);
+        viewBinderHelper.bind(sqwakViewHolver.swipeRevealLayout, this.id + "");
+
+        sqwakViewHolver.setFields(bmp, date, authorKey, authorName, message);
     }
 
-    class SqwakViewHolver extends FlexibleViewHolder {
+
+    class SqwakViewHolver extends FlexibleViewHolder implements SwipeRevealLayout.SwipeListener, View.OnClickListener {
 
 
         @BindView(R.id.autor_imageView)
@@ -102,19 +112,62 @@ public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
         public TextView dateTextView;
         @BindView(R.id.message_textView)
         public TextView messageTextView;
+        @BindView(R.id.swipeRevealLayout)
+        public SwipeRevealLayout swipeRevealLayout;
+        @BindView(R.id.imagen_unfollow)
+        public ImageView imagenUnfollow;
+        String autorkey;
+
+        Timer timer = new Timer();
 
 
         SqwakViewHolver(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             ButterKnife.bind(this, view);
+            swipeRevealLayout.setSwipeListener(this);
+            imagenUnfollow.setOnClickListener(this);
         }
 
-        void setFields(Bitmap bmp, DateTime date, String autorName, String message) {
+        @Override
+        public void onClick(View view) {
+            super.onClick(view);
+            int id = view.getId();
 
+            switch (id) {
+                case R.id.imagen_unfollow:
+                    DataBaseControl.followUnfollowInstructor(view.getContext(), this.autorkey, false);
+                    break;
+            }
+        }
+
+
+        void setFields(Bitmap bmp, DateTime date, String autorkey, String autorName, String message) {
+            this.autorkey = autorkey;
             autorImageView.setImageBitmap(bmp);
             autorNameTextView.setText(autorName);
             messageTextView.setText(message);
             dateTextView.setText(DateUtils.getDaysAgoString(date));
+        }
+
+
+        @Override
+        public void onClosed(SwipeRevealLayout view) {
+
+        }
+
+        @Override
+        public void onOpened(final SwipeRevealLayout view) {
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    view.close(true);
+                }
+            }, SECONDS_CLOSE * 1000);
+
+        }
+
+        @Override
+        public void onSlide(SwipeRevealLayout view, float slideOffset) {
 
         }
     }

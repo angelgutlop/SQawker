@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
+        vectorDrawables.useSupportLibrary = true
         applicationId "com.example.angel.sqawker"
         minSdkVersion 15
         targetSdkVersion 27
@@ -20,34 +21,41 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:27.0.0'
+    //Support
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:preference-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'com.android.support:preference-v7:27.0.0'
 
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.uncopt:android.justified:1.0'
     //Time utils
     implementation 'net.danlew:android.joda:2.9.9.4'
 
     //Schematic
-    annotationProcessor 'net.simonvt.schematic:schematic-compiler:0.6.3'
-    implementation 'net.simonvt.schematic:schematic:0.6.3'
+    annotationProcessor 'net.simonvt.schematic:schematic-compiler:0.7.0'
+    implementation 'net.simonvt.schematic:schematic:0.7.0'
 
     //Butternife
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     //Timber
     implementation 'com.jakewharton.timber:timber:4.7.0'
-    // UltimateReciclerView
-    //implementation 'com.marshalchen.ultimaterecyclerview:library:0.7.3'
 
-//FlexibleAdapter
+    //FlexibleAdapter (recyclerView con más opciones)
     implementation 'eu.davidea:flexible-adapter:5.0.4'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b4'
     implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b2'
-    // From 1.0.0-b3, library is compiled with data binding v2
     implementation 'eu.davidea:flexible-adapter-databinding:1.0.0-b3'
 
+    //    swipe a medio camino
+    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+
+    //Google apply ha de ir al final del fichero
+    implementation 'com.google.firebase:firebase-core:16.0.0'
+    implementation 'com.google.firebase:firebase-messaging:17.0.0'
 
 }
+
+apply plugin: 'com.google.gms.google-services'

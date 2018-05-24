@@ -17,6 +17,7 @@ import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.angel.sqawker.firebase.MyFirebaseService;
 import com.example.angel.sqawker.provider.InstructorsContract;
 import com.example.angel.sqawker.provider.SqawkContract;
 import com.example.angel.sqawker.provider.SqawkProvider;
@@ -24,6 +25,7 @@ import com.example.angel.sqawker.recycler.SqwakAdapter;
 import com.example.angel.sqawker.recycler.SqwakItem;
 import com.example.angel.sqawker.utils.Instructor;
 import com.example.angel.sqawker.utils.InstructorsInfo;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -34,6 +36,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import eu.davidea.flexibleadapter.common.FlexibleItemDecoration;
+import eu.davidea.flexibleadapter.helpers.ItemTouchHelperCallback;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks, SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -41,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     RecyclerView sqwakerRecyclerView;
     SqwakAdapter sqwakAdapter;
     SharedPreferences pref;
+    private MyFirebaseService myFirebaseService = new MyFirebaseService();
     private boolean loadData = true;
 
     @Override
@@ -86,8 +92,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
         ButterKnife.bind(this);
-        JodaTimeAndroid.init(this);
 
+        JodaTimeAndroid.init(this);
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+
+        } else {
+            //TODO Cambiar por el error de C
+            //https://github.com/JakeWharton/timber/blob/master/timber-sample/src/main/java/com/example/timber/ExampleApp.java
+            Timber.plant(new Timber.DebugTree());
+        }
+
+        Timber.d("Timber is working");
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
 
@@ -98,15 +114,40 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Initialize the Adapter
         sqwakAdapter = new SqwakAdapter(this);
         sqwakerRecyclerView.setAdapter(sqwakAdapter);
+
+        //Configure adapter
         sqwakAdapter.setLongPressDragEnabled(true);
-        sqwakAdapter.setSwipeEnabled(true);
+        sqwakerRecyclerView.addItemDecoration(new FlexibleItemDecoration(this)
+
+                .withDefaultDivider(android.R.attr.listDivider));
+
+        sqwakerRecyclerView.setHasFixedSize(true);
+
+
+        // sqwakAdapter.setSwipeEnabled(true);
+        ItemTouchHelperCallback itemTouchHelperCallback = sqwakAdapter.getItemTouchHelperCallback();
+        //   itemTouchHelperCallback.setSwipeFlags(ItemTouchHelper.LEFT); //Con | sew añaden mas flags
+        //  itemTouchHelperCallback.setMoveThreshold((float) 100.0);
+        // itemTouchHelperCallback.setSwipeThreshold((float) 0.5);
+
+
+        // sqwakAdapter.getItemTouchHelperCallback().setSwipeFlags(ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+        //
         // Initialize the RecyclerView and attach the Adapter to it as usual
 
         sqwakerRecyclerView.setLayoutManager(layoutManager);
 
-        //fillDataBases(); //Da error ya que no está cargada la base de instructores.
+        fillDataBases(); //Da error ya que no está cargada la base de instructores.
         secuentialLoaders();
+        Intent intentFirebaseMessService = new Intent(this, MyFirebaseService.class);
+        startService(intentFirebaseMessService);
+        // Intent intentFirebaseIdService = new Intent(this, MyFirebaseInstanceIdService.class);
+        //  startService(intentFirebaseIdService);
 
+
+        //Presenta informacion sobre la app
+        String firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        Timber.d("Token firebase de la app: " + firebaseToken);
     }
 
     @Override
@@ -191,13 +232,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             case LOADER_INSTRUCTORS_ID:
                 cursor = (Cursor) data;
-
                 InstructorsInfo.setInfo(this, cursor);
                 getSupportLoaderManager().initLoader(++id, null, this);
                 break;
             case LOADER_MESSAGES_ID:
                 cursor = (Cursor) data;
-
                 sqwakAdapter.updateDataSet(cursor);
                 secuentialLoadersLast();
                 break;
@@ -242,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         contentResolver.bulkInsert(SqawkProvider.Instructors.CONTENT_URI, valuesInst);
 
         //La de mensajes
+        /*
         List<SqwakItem> lista = generateRandomMessages();
         ContentValues[] values = new ContentValues[lista.size()];
 
@@ -257,6 +297,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         contentResolver.delete(SqawkProvider.SqawkMessages.CONTENT_URI, null, null);
         contentResolver.bulkInsert(SqawkProvider.SqawkMessages.CONTENT_URI, values);
+        */
 
 
     }
@@ -269,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         lista.add(new Instructor(this, "key_jlin", "JLin", "jlin", true));
         lista.add(new Instructor(this, "key_lyla", "Lyla", "lyla", true));
         lista.add(new Instructor(this, "key_nikita", "Nikita", "nikita", true));
-        lista.add(new Instructor(this, "key_test", "Test", "text", true));
+        lista.add(new Instructor(this, "key_test", "Test", "test", true));
 
 
         return lista;

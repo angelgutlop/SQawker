@@ -1,7 +1,5 @@
 package com.example.angel.sqawker.settings;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.preference.Preference;
@@ -11,8 +9,7 @@ import android.support.v7.preference.PreferenceScreen;
 
 import com.example.angel.sqawker.Controls.SwitchPreferenceCompatCustom;
 import com.example.angel.sqawker.R;
-import com.example.angel.sqawker.provider.InstructorsContract;
-import com.example.angel.sqawker.provider.SqawkProvider;
+import com.example.angel.sqawker.utils.DataBaseControl;
 import com.example.angel.sqawker.utils.Instructor;
 import com.example.angel.sqawker.utils.InstructorsInfo;
 
@@ -73,16 +70,11 @@ public class SettingsFollowingFragment extends PreferenceFragmentCompat implemen
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        Boolean b = (Boolean) newValue;
+        Boolean follow = (Boolean) newValue;
         String key = preference.getKey();
 
-        int value = b ? 1 : 0;
-        ContentValues values = new ContentValues();
-        values.put(InstructorsContract.COLUMN_FOLLOWING, value);
-        ContentResolver contentResolver = getContext().getContentResolver();
+        DataBaseControl.followUnfollowInstructor(getContext(), key, follow);
 
-        contentResolver.update(SqawkProvider.Instructors.CONTENT_URI, values, InstructorsContract.COLUMN_AUTHOR_KEY + "='" + key + "' ", null);
-       
 
         return false;
     }

@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.example.angel.sqawker.utils.DataBaseUtils;
+import com.example.angel.sqawker.utils.DataBaseControl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +37,7 @@ public class SqwakAdapter extends FlexibleAdapter<SqwakItem> {
         this.context = context;
     }
 
+
     public void updateDataSet(Cursor cursor) {
         this.mCursor = cursor;
         List<SqwakItem> list = cursor2List(context, cursor);
@@ -46,7 +47,7 @@ public class SqwakAdapter extends FlexibleAdapter<SqwakItem> {
 
     public void addElements(Cursor cursor) {
 
-        List<SqwakItem> listaNew = DataBaseUtils.getNewElements(context, cursor, mCursor);
+        List<SqwakItem> listaNew = DataBaseControl.getNewElements(context, cursor, mCursor);
         updateDataSet(listaNew, true);
     }
 
@@ -57,9 +58,9 @@ public class SqwakAdapter extends FlexibleAdapter<SqwakItem> {
 
         List<SqwakItem> lista = new ArrayList<>();
 
-        for (int i = 0; i < cursor.getCount() - 1; i++) {
+        for (int i = 0; i < cursor.getCount(); i++) {
 
-            lista.add(DataBaseUtils.convert2SqwakItem(context, cursor, i));
+            lista.add(DataBaseControl.convert2SqwakItem(context, cursor, i));
         }
 
         return lista;

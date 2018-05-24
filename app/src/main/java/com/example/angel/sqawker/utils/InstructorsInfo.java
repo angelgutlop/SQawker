@@ -48,7 +48,7 @@ public class InstructorsInfo {
     public static void setInfo(Context context, Cursor cursor) {
         instructorsMap.clear();
         for (int i = 0; i < cursor.getCount(); i++) {
-            Instructor instructor = DataBaseUtils.convert2InstructorItem(context, cursor, i);
+            Instructor instructor = DataBaseControl.convert2InstructorItem(context, cursor, i);
             instructorsMap.put(instructor.autor_key, instructor);
         }
     }
