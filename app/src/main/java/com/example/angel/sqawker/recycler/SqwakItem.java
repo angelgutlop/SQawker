@@ -51,6 +51,16 @@ public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
         this.message = message;
     }
 
+    public SqwakItem(Context context, DateTime date, String authorKey, String autorName, Bitmap bmp, String message) {
+        this.context = context;
+        this.id = idStatic++;
+        this.bmp = bmp;
+        this.date = date;
+        this.authorName = autorName;
+        this.authorKey = authorKey;
+        this.message = message;
+    }
+
     /**
      * When an item is equals to another?
      * Write your own concept of equals, mandatory to implement or use

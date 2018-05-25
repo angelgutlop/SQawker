@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -17,6 +19,7 @@ import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.angel.sqawker.firebase.MyFirebaseInstanceIdService;
 import com.example.angel.sqawker.firebase.MyFirebaseService;
 import com.example.angel.sqawker.provider.InstructorsContract;
 import com.example.angel.sqawker.provider.SqawkContract;
@@ -36,8 +39,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import eu.davidea.flexibleadapter.common.FlexibleItemDecoration;
-import eu.davidea.flexibleadapter.helpers.ItemTouchHelperCallback;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -117,23 +118,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         //Configure adapter
         sqwakAdapter.setLongPressDragEnabled(true);
-        sqwakerRecyclerView.addItemDecoration(new FlexibleItemDecoration(this)
-
-                .withDefaultDivider(android.R.attr.listDivider));
-
         sqwakerRecyclerView.setHasFixedSize(true);
 
-
-        // sqwakAdapter.setSwipeEnabled(true);
-        ItemTouchHelperCallback itemTouchHelperCallback = sqwakAdapter.getItemTouchHelperCallback();
-        //   itemTouchHelperCallback.setSwipeFlags(ItemTouchHelper.LEFT); //Con | sew añaden mas flags
-        //  itemTouchHelperCallback.setMoveThreshold((float) 100.0);
-        // itemTouchHelperCallback.setSwipeThreshold((float) 0.5);
-
-
-        // sqwakAdapter.getItemTouchHelperCallback().setSwipeFlags(ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
-        //
-        // Initialize the RecyclerView and attach the Adapter to it as usual
 
         sqwakerRecyclerView.setLayoutManager(layoutManager);
 
@@ -141,8 +127,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         secuentialLoaders();
         Intent intentFirebaseMessService = new Intent(this, MyFirebaseService.class);
         startService(intentFirebaseMessService);
-        // Intent intentFirebaseIdService = new Intent(this, MyFirebaseInstanceIdService.class);
-        //  startService(intentFirebaseIdService);
+        Intent intentFirebaseIdService = new Intent(this, MyFirebaseInstanceIdService.class);
+        startService(intentFirebaseIdService);
 
 
         //Presenta informacion sobre la app
@@ -206,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             case LOADER_MESSAGES_ID:
                 String[] projection = new String[]{SqawkContract.COLUMN_AUTOR_KEY, InstructorsContract.COLUMN_AUTHOR_NAME, SqawkContract.COLUMN_DATE, SqawkContract.COLUMN_MESSAGE, InstructorsContract.COLUMN_FOLLOWING};
-                return new CursorLoader(this, SqawkProvider.SqawkMessages.CONTENT_URI, projection, null, null, null);
+                return new CursorLoader(this, SqawkProvider.SqawkMessages.CONTENT_URI_FOLLOWED, projection, null, null, null);
 
             case LOADER_INSTRUCTORS_ID:
                 return new CursorLoader(this, SqawkProvider.Instructors.CONTENT_URI, null, null, null, null);
@@ -281,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         contentResolver.bulkInsert(SqawkProvider.Instructors.CONTENT_URI, valuesInst);
 
         //La de mensajes
-        /*
+
         List<SqwakItem> lista = generateRandomMessages();
         ContentValues[] values = new ContentValues[lista.size()];
 
@@ -295,9 +281,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             values[i].put(SqawkContract.COLUMN_DATE, sqItem.date.getMillis());
             values[i].put(SqawkContract.COLUMN_MESSAGE, sqItem.message);
         }
-        contentResolver.delete(SqawkProvider.SqawkMessages.CONTENT_URI, null, null);
-        contentResolver.bulkInsert(SqawkProvider.SqawkMessages.CONTENT_URI, values);
-        */
+        contentResolver.delete(SqawkProvider.SqawkMessages.CONTENT_URI_MESSAGES, null, null);
+        contentResolver.bulkInsert(SqawkProvider.SqawkMessages.CONTENT_URI_MESSAGES, values);
 
 
     }
@@ -322,11 +307,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         List<SqwakItem> lista = new ArrayList<>();
         DateTime dateNow = DateTime.now();
 
-        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.ASSER_KEY, "Hola!!!"));
-        lista.add(new SqwakItem(this, dateNow.plusMinutes(32), InstructorsInfo.CEZANNE_KEY, "Que tal vamos?"));
-        lista.add(new SqwakItem(this, dateNow.plusMinutes(50), InstructorsInfo.LYLA_KEY, "Bien, y vos?"));
-        lista.add(new SqwakItem(this, dateNow.plusMinutes(72), InstructorsInfo.NIKITA_KEY, "Que animado está esto!!!"));
-        lista.add(new SqwakItem(this, dateNow.plusDays(2), InstructorsInfo.NIKITA_KEY, "Hola???"));
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.test);
+
+
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "Subjects to ecstatic children he. Could ye leave up as built match. Dejection agreeable attention set suspected led offending. Admitting an performed supposing by. Garden agreed matter are should formed temper had. Full held gay now roof whom such next was. Ham pretty our people moment put excuse narrow. Spite mirth money six above get going great own. Started now shortly had for assured hearing expense. Led juvenile his laughing speedily put pleasant relation offering. "));
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "Carried nothing on am warrant towards. Polite in of in oh needed itself silent course. Assistance travelling so especially do prosperous appearance mr no celebrated. Wanted easily in my called formed suffer. Songs hoped sense as taken ye mirth at. Believe fat how six drawing pursuit minutes far. Same do seen head am part it dear open to. Whatever may scarcely judgment had."));
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "Needed feebly dining oh talked wisdom oppose at. Applauded use attempted strangers now are middleton concluded had."));
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "It is tried no added purse shall no on truth. Pleased anxious or as in by viewing forbade minutes prevent. Too leave had those get being led weeks blind. Had men rose from down lady able. Its son him ferrars proceed six parlors."));
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "Her say projection age announcing decisively men. Few gay sir those green men timed downs widow chief. Prevailed remainder may propriety can and. "));
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "By impossible of in difficulty discovered celebrated ye. Justice joy manners boy met resolve produce. Bed head loud next plan rent had easy add him. As earnestly shameless elsewhere defective estimable fulfilled of. Esteem my advice it an excuse enable. Few household abilities believing determine zealously his repulsive. To open draw dear be by side like. "));
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "HI!"));
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "Good morning"));
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "Now residence dashwoods she excellent you. Shade being under his bed her."));
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "Pleasant horrible but confined day end marriage. Eagerness furniture set preserved far recommend. Did even but nor are most gave hope. Secure active living depend son repair day ladies now. "));
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "Of resolve to gravity thought my prepare chamber so. Unsatiable entreaties collecting may sympathize nay interested instrument. If continue building numerous of at relation in margaret. Lasted engage roused mother an am at."));
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "Here we are"));
+        lista.add(new SqwakItem(this, dateNow.plusMinutes(23), InstructorsInfo.TEST_ACCOUNT_KEY, "Test", bmp, "Other early while if by do to. Missed living excuse as be. Cause heard fat above first shall for. My smiling to he removal weather on anxious. "));
 
 
         return lista;

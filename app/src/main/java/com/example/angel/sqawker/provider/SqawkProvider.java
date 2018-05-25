@@ -25,22 +25,29 @@ public class SqawkProvider {
     public static class SqawkMessages {
 
         @ContentUri(
-                path = pathMessages,
+                path = pathMessages + "/followed",
                 type = "vnd.android.cursor.dir/list",
                 join = "JOIN " + SqawkDatabase.INSTRUCTORS + " ON " +
                         SqawkDatabase.SQUAWK_MESSAGES + "." + SqawkContract.COLUMN_AUTOR_KEY + " = " + SqawkDatabase.INSTRUCTORS + "." + InstructorsContract.COLUMN_AUTHOR_KEY,
                 where = InstructorsContract.COLUMN_FOLLOWING + " = 1",
                 defaultSort = SqawkContract.COLUMN_DATE + " DESC")
-        public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + pathMessages);
+        public static final Uri CONTENT_URI_FOLLOWED = Uri.parse("content://" + AUTHORITY + "/" + pathMessages + "/followed");
+
+
+        @ContentUri(
+                path = pathMessages,
+                type = "vnd.android.cursor.dir/list",
+                defaultSort = SqawkContract.COLUMN_DATE + " DESC")
+        public static final Uri CONTENT_URI_MESSAGES = Uri.parse("content://" + AUTHORITY + "/" + pathMessages);
 
         @NotifyBulkInsert
         public static Uri[] onBulkInsert(Uri uri, String where, String[] whereArgs) {
-            return new Uri[]{SqawkMessages.CONTENT_URI};
+            return new Uri[]{SqawkMessages.CONTENT_URI_FOLLOWED};
         }
 
         @NotifyInsert
         public static Uri[] onInsert(Uri uri, String where, String[] whereArgs) {
-            return new Uri[]{SqawkMessages.CONTENT_URI};
+            return new Uri[]{SqawkMessages.CONTENT_URI_FOLLOWED};
         }
     }
 
@@ -56,7 +63,7 @@ public class SqawkProvider {
 
         @NotifyUpdate(paths = pathInstructors)
         public static Uri[] onUpdate(Uri uri, String where, String[] whereArgs) {
-            return new Uri[]{uri, SqawkMessages.CONTENT_URI};
+            return new Uri[]{uri, SqawkMessages.CONTENT_URI_FOLLOWED};
         }
 
 
@@ -78,7 +85,7 @@ public class SqawkProvider {
             final long listId = c.getLong(c.getColumnIndex(NoteColumns.LIST_ID));
             c.close();*/
 
-            return new Uri[]{withKey(instructorKey), SqawkMessages.CONTENT_URI};
+            return new Uri[]{withKey(instructorKey), SqawkMessages.CONTENT_URI_FOLLOWED};
         }
     }
 }
