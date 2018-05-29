@@ -1,137 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipeRevealLayout"
     android:layout_width="match_parent"
 
-    android:layout_height="wrap_content"
-    app:dragEdge="right"
-    app:mode="same_level">
+    android:layout_height="wrap_content">
 
     <!-- Your secondary layout here -->
 
     <!-- Your main layout here -->
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/layout_derecho_unfollow"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@color/accent"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        tools:layout_editor_absoluteX="384dp">
-
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/imagen_unfollow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
             app:srcCompat="@drawable/ic_visibility_off_white_24dp" />
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/vista_frontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/background_light"
-            android:padding="8dp">
-
-            <ImageView
-                android:id="@+id/autor_imageView"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:scaleType="fitCenter"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/cezanne" />
-
-            <TextView
-                android:id="@+id/autor_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:text="AUTOR"
-                android:textColor="@color/primary_text"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/autor_imageView"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <TextView
-                android:id="@+id/date_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:text="DATE"
-                android:textColor="@color/secondary_text"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/autor_textView"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/message_textView"
-                android:layout_width="291dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:text="Tex"
-                android:textAppearance="@style/TextAppearance.AppCompat"
-                android:textColor="@color/primary_text"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/autor_imageView"
-                app:layout_constraintTop_toBottomOf="@+id/autor_textView"
-
-                />
-
-
-        </android.support.constraint.ConstraintLayout>
-
-
-    </FrameLayout>
-
-</com.chauthai.swipereveallayout.SwipeRevealLayout><!--
-
-
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <RelativeLayout
-        android:id="@+id/vista_lado_derecho"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/holo_green_light"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/imagen_vista_derecha"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="22dp"
-            android:layout_marginRight="22dp"
-            app:srcCompat="@drawable/ic_visibility_off_white_24dp" />
-
-    </RelativeLayout>
+    </LinearLayout>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/vista_frontal"
@@ -164,17 +60,6 @@
             app:layout_constraintStart_toEndOf="@+id/autor_imageView"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/message_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:text="MENSAJE"
-            android:textAppearance="@style/TextAppearance.AppCompat"
-            android:textColor="@color/primary_text"
-            app:layout_constraintStart_toEndOf="@+id/autor_imageView"
-            app:layout_constraintTop_toBottomOf="@+id/autor_textView" />
 
         <TextView
             android:id="@+id/date_textView"
@@ -188,7 +73,24 @@
             app:layout_constraintStart_toEndOf="@+id/autor_textView"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+        <me.biubiubiu.justifytext.library.JustifyTextView
+            android:id="@+id/message_textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="texto justificado"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="@color/primary_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/autor_imageView"
+            app:layout_constraintTop_toBottomOf="@+id/autor_textView" />
+
+
     </android.support.constraint.ConstraintLayout>
 
-
-    </FrameLayout> -->
+</com.daimajia.swipe.SwipeLayout>

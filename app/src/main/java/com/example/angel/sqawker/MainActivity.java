@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Instructor instructor = listaInst.get(i);
 
             valuesInst[i] = new ContentValues();
-            int following = instructor.following ? 1 : 0;
+            int following = instructor.getFollowing() ? 1 : 0;
 
             valuesInst[i].put(InstructorsContract.COLUMN_AUTHOR_NAME, instructor.autor_name);
             valuesInst[i].put(InstructorsContract.COLUMN_AUTHOR_KEY, instructor.autor_key);

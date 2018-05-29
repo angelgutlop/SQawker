@@ -57,7 +57,7 @@ public class SettingsFollowingFragment extends PreferenceFragmentCompat implemen
             switchPreference.setTitle(instructor.autor_name);
             switchPreference.setIcon(new BitmapDrawable(getResources(), instructor.autor_bmp_image));
             category.addPreference(switchPreference);
-            switchPreference.setChecked(instructor.following);
+            switchPreference.setChecked(instructor.getFollowing());
 
         }
 
@@ -74,8 +74,9 @@ public class SettingsFollowingFragment extends PreferenceFragmentCompat implemen
         String key = preference.getKey();
 
         DataBaseControl.followUnfollowInstructor(getContext(), key, follow);
+        String nameInstructor = InstructorsInfo.getInstructorName(key);
+        Instructor.subcribe2Instructor(nameInstructor, follow);
 
-
-        return false;
+        return true;
     }
 }

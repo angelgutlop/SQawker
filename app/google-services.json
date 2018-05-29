@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "376485049695",
+    "firebase_url": "https://sqawker-789fd.firebaseio.com",
+    "project_id": "sqawker-789fd",
+    "storage_bucket": "sqawker-789fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376485049695:android:fc0cf0cf93f66b60",
+        "android_client_info": {
+          "package_name": "com.example.angel.sqawker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "376485049695-ohe4g7s26ad9o6hqsmvjdg3i7l416dl4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.angel.sqawker",
+            "certificate_hash": "c5a55d3d71b13287bbf7c065aa8c187435bac9c0"
+          }
+        },
+        {
+          "client_id": "376485049695-05dq25403r7po0u6qkjmtgdhqd64v1d8.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "376485049695-05dq25403r7po0u6qkjmtgdhqd64v1d8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjhKMmCHgfEg1qzQaHS7NnFd5zBIbS5nU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "376485049695-05dq25403r7po0u6qkjmtgdhqd64v1d8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

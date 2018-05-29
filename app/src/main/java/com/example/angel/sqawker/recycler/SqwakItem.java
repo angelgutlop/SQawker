@@ -1,16 +1,19 @@
 package com.example.angel.sqawker.recycler;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.chauthai.swipereveallayout.SwipeRevealLayout;
-import com.chauthai.swipereveallayout.ViewBinderHelper;
+import com.daimajia.swipe.SwipeLayout;
 import com.example.angel.sqawker.R;
 import com.example.angel.sqawker.utils.DataBaseControl;
 import com.example.angel.sqawker.utils.DateUtils;
+import com.example.angel.sqawker.utils.Instructor;
 import com.example.angel.sqawker.utils.InstructorsInfo;
 
 import org.joda.time.DateTime;
@@ -28,7 +31,6 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
 
-    private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
     private static int idStatic = -1;
 
@@ -61,12 +63,7 @@ public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
         this.message = message;
     }
 
-    /**
-     * When an item is equals to another?
-     * Write your own concept of equals, mandatory to implement or use
-     * default java implementation (return this == o;) if you don't have unique IDs!
-     * This will be explained in the "Item interfaces" Wiki page.
-     */
+
     @Override
     public boolean equals(Object inObject) {
         if (inObject instanceof SqwakItem) {
@@ -76,14 +73,7 @@ public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
         return false;
     }
 
-    /**
-     * You should implement also this method if equals() is implemented.
-     * This method, if implemented, has several implications that Adapter handles better:
-     * - The Hash, increases performance in big list during Update & Filter operations.
-     * - You might want to activate stable ids via Constructor for RV, if your id
-     * is unique (read more in the wiki page: "Setting Up Advanced") you will benefit
-     * of the animations also if notifyDataSetChanged() is invoked.
-     */
+
     @Override
     public int hashCode() {
         return String.valueOf(id).hashCode();
@@ -105,13 +95,13 @@ public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
 
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, SqwakViewHolver sqwakViewHolver, int position, List<Object> payloads) {
-        viewBinderHelper.bind(sqwakViewHolver.swipeRevealLayout, this.id + "");
+        //viewBinderHelper.bind(sqwakViewHolver.swipeRevealLayout, this.id + "");
 
         sqwakViewHolver.setFields(bmp, date, authorKey, authorName, message);
     }
 
 
-    class SqwakViewHolver extends FlexibleViewHolder implements SwipeRevealLayout.SwipeListener, View.OnClickListener {
+    public class SqwakViewHolver extends FlexibleViewHolder implements View.OnClickListener, SwipeLayout.SwipeListener {
 
 
         @BindView(R.id.autor_imageView)
@@ -122,11 +112,19 @@ public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
         public TextView dateTextView;
         @BindView(R.id.message_textView)
         public TextView messageTextView;
-        @BindView(R.id.swipeRevealLayout)
-        public SwipeRevealLayout swipeRevealLayout;
+
         @BindView(R.id.imagen_unfollow)
         public ImageView imagenUnfollow;
         String autorkey;
+
+        @BindView(R.id.swipeRevealLayout)
+        public SwipeLayout swipeLayout;
+
+        @BindView(R.id.vista_frontal)
+        public ConstraintLayout vistaFrontalLayout;
+
+        @BindView(R.id.layout_derecho_unfollow)
+        public LinearLayout unfollowLayout;
 
         Timer timer = new Timer();
 
@@ -134,8 +132,12 @@ public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
         SqwakViewHolver(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             ButterKnife.bind(this, view);
-            swipeRevealLayout.setSwipeListener(this);
+
             imagenUnfollow.setOnClickListener(this);
+            swipeLayout.addSwipeListener(this);
+
+//
+
         }
 
         @Override
@@ -146,6 +148,8 @@ public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
             switch (id) {
                 case R.id.imagen_unfollow:
                     DataBaseControl.followUnfollowInstructor(view.getContext(), this.autorkey, false);
+                    Instructor.subcribe2Instructor(authorName, false);
+
                     break;
             }
         }
@@ -155,29 +159,53 @@ public class SqwakItem extends AbstractFlexibleItem<SqwakItem.SqwakViewHolver> {
             this.autorkey = autorkey;
             autorImageView.setImageBitmap(bmp);
             autorNameTextView.setText(autorName);
-            messageTextView.setText(message);
+            messageTextView.setText(message + "\n");
             dateTextView.setText(DateUtils.getDaysAgoString(date));
+
+
         }
 
 
         @Override
-        public void onClosed(SwipeRevealLayout view) {
-
-        }
-
-        @Override
-        public void onOpened(final SwipeRevealLayout view) {
+        public void onStartOpen(final SwipeLayout layout) {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    view.close(true);
+                    ((Activity) layout.getContext()).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            layout.close(true);
+                        }
+                    });
+
+
                 }
             }, SECONDS_CLOSE * 1000);
 
         }
 
         @Override
-        public void onSlide(SwipeRevealLayout view, float slideOffset) {
+        public void onOpen(SwipeLayout layout) {
+
+        }
+
+        @Override
+        public void onStartClose(SwipeLayout layout) {
+
+        }
+
+        @Override
+        public void onClose(SwipeLayout layout) {
+
+        }
+
+        @Override
+        public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+
+        }
+
+        @Override
+        public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
 
         }
     }
